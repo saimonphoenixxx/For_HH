@@ -1,0 +1,23 @@
+apiVersion : apps/v1
+kind: Deployment 
+metadata: 
+  name: deploy1-replicas
+  labels:
+   env: prod
+   owner: valera
+   app: k8s_application
+spec: 
+  replicas: 3
+  selector: 
+    matchLabels: 
+        project: rep
+  template: 
+    metadata:
+      labels: 
+        project: rep
+    spec:
+      containers: 
+        - name: web-rep
+          image: saimonphoenix/k8sphp
+          ports:
+           - containerPort: 80       

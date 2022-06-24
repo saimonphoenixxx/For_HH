@@ -1,0 +1,49 @@
+apiVersion : apps/v1
+kind: Deployment 
+metadata: 
+  name: deploy1-autoscaling
+  labels:
+   env: prod
+   owner: valera
+   app: k8s_application
+spec: 
+  replicas: 4
+  selector: 
+    matchLabels: 
+        project: mossad
+  template: 
+    metadata:
+      labels: 
+        project: mossad
+    spec:
+      containers: 
+        - name: web-mossad
+          image: saimonphoenix/k8sphp
+          ports:
+           - containerPort: 80       
+
+
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: autoscaling
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: deploy1-autoscaling
+  minReplicas: 3
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+        name: cpu
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+        name: memory
+        type: Utilization
+        averageUtilization: 80
+           
